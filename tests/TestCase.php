@@ -1,4 +1,4 @@
-<?php
+<?phpgit remote a
 
 namespace Tests;
 

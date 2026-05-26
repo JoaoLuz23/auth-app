@@ -1,59 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Auth-App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Visão geral**
+- **Projeto**: aplicação simples em Laravel para autenticação e gerenciamento de conteúdo (categorias e posts).
+- **Estrutura**: padrão MVC com modelos Eloquent, migrations, controllers, requests e views Blade.
 
-## About Laravel
+**Recursos principais**
+- **Autenticação**: cadastro, login e perfil de usuário.
+- **Categorias**: criação e gerenciamento de categorias (`Categoria`).
+- **Posts**: criação, edição, remoção e upload de imagem para posts (`Post`).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Arquivos/Locais importantes**
+- **Modelos**: [app/Models/Categoria.php](app/Models/Categoria.php), [app/Models/Post.php](app/Models/Post.php), [app/Models/Posts.php](app/Models/Posts.php), [app/Models/User.php](app/Models/User.php)
+- **Migrations**: [database/migrations/2026_05_19_114050_categoria.php](database/migrations/2026_05_19_114050_categoria.php), [database/migrations/2026_05_19_114734_post.php](database/migrations/2026_05_19_114734_post.php), [database/migrations/2026_05_26_144213_add_image_to_posts_table.php](database/migrations/2026_05_26_144213_add_image_to_posts_table.php)
+- **Views**: [resources/views/categorias](resources/views/categorias), [resources/views/posts](resources/views/posts), [resources/views/auth](resources/views/auth), [resources/views/profile](resources/views/profile), [resources/views/layouts](resources/views/layouts)
+- **Rotas**: [routes/web.php](routes/web.php), [routes/auth.php](routes/auth.php)
+- **Seeders / Factories**: [database/seeders/DatabaseSeeder.php](database/seeders/DatabaseSeeder.php), [database/factories/UserFactory.php](database/factories/UserFactory.php)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Modelos e campos principais**
+- `Categoria` ([app/Models/Categoria.php](app/Models/Categoria.php)):
+	- Atributos preenchíveis: `name` (nome da categoria).
+	- Migration cria a tabela `categorias` com `id`, `name`, `created_at`, `updated_at`.
+- `Post` ([app/Models/Post.php](app/Models/Post.php)):
+	- Atributos preenchíveis: `title`, `text`, `image`, `categorias_id`.
+	- Relations: `categorias_id` é `foreignId` com constraint para `categorias` (deleta em cascade).
+	- Accessor: `getImageUrlAttribute()` retorna a URL completa da imagem (`storage/`).
+- `Posts` ([app/Models/Posts.php](app/Models/Posts.php)):
+	- Arquivo presente, sem implementação (placeholder).
+- `User` ([app/Models/User.php](app/Models/User.php)):
+	- Atributos preenchíveis: `name`, `email`, `password`.
+	- Casts: `email_verified_at` => `datetime`, `password` => `hashed`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Migrations (detalhes)**
+- `2026_05_19_114050_categoria.php`: cria `categorias` com `id`, `name` e timestamps.
+- `2026_05_19_114734_post.php`: cria `posts` com `id`, `title`, `text`, `categorias_id` (foreign key) e timestamps. `onDelete('cascade')` para a FK.
+- `2026_05_26_144213_add_image_to_posts_table.php`: adiciona coluna `image` (string, nullable) à tabela `posts`.
 
-## Learning Laravel
+**Controllers e validação**
+- Os controllers estão em [app/Http/Controllers](app/Http/Controllers) e lidam com CRUD de categorias e posts, além das rotas de autenticação.
+- Validações customizadas estão em [app/Http/Requests](app/Http/Requests).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Como rodar o projeto (local)**
+1. Instale dependências PHP/Composer e configure um servidor local (XAMPP, Laragon ou similar).
+2. No diretório do projeto, instale dependências:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install
+npm install
+npm run build
+```
 
-## Laravel Sponsors
+3. Configure o `.env` (copie `.env.example` para `.env`) — configure `DB_` e `APP_URL`.
+4. Gere a chave da aplicação:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+php artisan key:generate
+```
 
-### Premium Partners
+5. Rode migrations e seeders:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+php artisan migrate --seed
+```
 
-## Contributing
+6. Caso precise linkar storage (para imagens):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan storage:link
+```
 
-## Code of Conduct
+7. Inicie o servidor local:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+Abra `http://localhost:8000` (ou o `APP_URL` configurado) e acesse as rotas de autenticação e os CRUDs de categorias/posts.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Observações e próximos passos sugeridos**
+- Revisar e implementar `app/Models/Posts.php` se necessário.
+- Adicionar testes para fluxo de criação de `Categoria` e `Post` (tests/Feature).
+- Melhorar upload e redimensionamento de imagens (usando `Intervention/Image` ou similar).
 
-## License
+Se quiser, eu posso:
+- Gerar um README mais enxuto ou em formato passo-a-passo para deploy.
+- Adicionar exemplos de rotas e payloads JSON.
+- Criar testes básicos para `Categoria` e `Post`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+Gerado automaticamente: resumo do projeto e instruções básicas em Português.
