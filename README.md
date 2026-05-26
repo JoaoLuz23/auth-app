@@ -56,7 +56,7 @@ npm run build
 php artisan key:generate
 ```
 
-5. Rode migrations e seeders:
+5. Rode migrations e seeders ( CASO QUEIRA POPULAR O BANCO DE DADOS ):
 
 ```bash
 php artisan migrate --seed
